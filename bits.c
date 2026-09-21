@@ -76,8 +76,17 @@ int samesign(int x, int y) {
  *   Difficulty: 4
  */
 int logtwo(int v) {
-    
-    return 2;
+    int b16 =((v >> 16) > 0) << 4;
+    v = v >> b16;
+    int b8 = ((v >> 8) > 0) << 3;
+    v = v >> b8;
+    int b4 = ((v >> 4) > 0) << 2;
+    v = v >> b4;
+    int b2 = ((v >> 2) > 0) << 1;
+    v = v >> b2;
+    int b1 = ((v >> 1) > 0);
+    int ans = b16 | b8 | b4 | b2 | b1;
+    return ans;
 }
 
 /*
@@ -90,7 +99,9 @@ int logtwo(int v) {
  *    Difficulty: 2
  */
 int byteSwap(int x, int n, int m) {
-    return 2;
+    int diff = ((x >> (n << 3)) ^ (x >> (m << 3))) & 0xFF;
+    return x ^ (diff << (n << 3)) ^ (diff << (m << 3));
+    return x;
 }
 
 /*
@@ -102,7 +113,13 @@ int byteSwap(int x, int n, int m) {
  *   Difficulty: 3
  */
 unsigned reverse(unsigned v) {
-    return 2;
+    unsigned r = 0, i = 0;
+    while (!(i & 1 << 5)) {
+        r = (r << 1) | (v & 1);
+        v >>= 1;
+        i++;
+    }
+    return r;
 }
 
 /*
@@ -114,7 +131,8 @@ unsigned reverse(unsigned v) {
  *   Difficulty: 3
  */
 int logicalShift(int x, int n) {
-    return 2;
+    int mask = ~(((1 << 31) >> n) << 1);
+    return (x >> n) & mask;
 }
 
 /*
@@ -138,6 +156,7 @@ int leftBitCount(int x) {
  *   Difficulty: 4
  */
 unsigned float_i2f(int x) {
+
     return 2;
 }
 
