@@ -144,7 +144,26 @@ int logicalShift(int x, int n) {
  *   Difficulty: 4
  */
 int leftBitCount(int x) {
-    return 2;
+    int ans=0, a=0;
+    a=!((0xFFFF0000 & x) ^ 0xFFFF0000);
+    x = x << (a << 4);
+    ans+=a << 4;
+    a=!((0xFF000000 & x) ^ 0xFF000000);
+    x = x << (a << 3);
+    ans+=a << 3;
+    a=!((0xF0000000 & x) ^ 0xF0000000);
+    x = x << (a << 2);
+    ans+=a << 2;
+    a=!((0xC0000000 & x) ^ 0xC0000000);
+    x = x << (a << 1);
+    ans+=a << 1;
+    a=!((0x80000000 & x) ^ 0x80000000);
+    x = x << a;
+    ans+=a;
+    a=!((0x80000000 & x) ^ 0x80000000);
+    x = x << a;
+    ans+=a;
+    return ans;
 }
 
 /*
