@@ -19,7 +19,8 @@
  * Difficulty: 1
  */
 int bitAnd(int x, int y) {
-    return 2;
+    int ans=~(~x | ~y);
+    return ans;
 }
 
 /*
@@ -30,7 +31,8 @@ int bitAnd(int x, int y) {
  *   Difficulty: 1
  */
 int bitXor(int x, int y) {
-    return 2;
+    int ans=~(~x & ~y) & (~(x & y));
+    return ans;
 }
 
 /*
@@ -50,7 +52,18 @@ int bitXor(int x, int y) {
  *   1 if x and y have the same sign , 0 otherwise.
  */
 int samesign(int x, int y) {
-    return 2;
+    if (!x && !y) {
+        return 1;
+    }
+    if (!x){
+        return 0;
+    }
+    if (!y){
+        return 0;
+    }
+    int sign_x = x >> 31;
+    int sign_y = y >> 31;
+    return !(sign_x ^ sign_y);
 }
 
 /*
@@ -63,6 +76,7 @@ int samesign(int x, int y) {
  *   Difficulty: 4
  */
 int logtwo(int v) {
+    
     return 2;
 }
 
