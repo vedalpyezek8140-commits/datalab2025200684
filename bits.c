@@ -175,8 +175,29 @@ int leftBitCount(int x) {
  *   Difficulty: 4
  */
 unsigned float_i2f(int x) {
-
-    return 2;
+    int sign = x & 0x80000000;
+    int exp = 158;
+    int frac;
+    int tail;
+    if (!x) return 0;
+    if (x == 0x80000000) return 0xCF000000;
+    if (sign) {
+        x = -x;
+    }
+    while ((x & 0x80000000) == 0) {
+        x <<= 1;
+        exp--;
+    }
+    frac = (x >> 8) & 0x007FFFFF;
+    tail = x & 0xFF;
+    if (tail > 0x80){
+        frac++;
+    }
+    if (tail == 0x80)
+    if (frac & 1) {
+        frac++;
+    }
+    return sign + (exp << 23) + frac;
 }
 
 /*
@@ -191,6 +212,20 @@ unsigned float_i2f(int x) {
  *   Difficulty: 4
  */
 unsigned floatScale2(unsigned uf) {
+    unsigned sign = uf & 0x80000000;
+    unsigned exp = (uf >> 23) & 0xFF;
+    unsigned frac = uf & 0x7FFFFF;
+    if (exp == 0xFF) {
+        return uf;
+    }
+    if (exp == 0) {
+        return sign | (frac << 1);
+    }
+    exp++;
+    if (exp == 0xFF) {
+        return sign | (0xFF << 23);
+    }
+    return sign | (exp << 23) | frac;
     return 2;
 }
 
@@ -208,7 +243,35 @@ unsigned floatScale2(unsigned uf) {
  *   Difficulty: 3
  */
 int float64_f2i(unsigned uf1, unsigned uf2) {
-    return 2;
+    int sign = uf2 >> 31;
+    int exp = (uf2 >> 20) & 0x7FF;
+    int E = exp - 1023;
+    int val;
+    if (E < 0) {
+        return 0;
+    }
+    if (E > 31) {
+        return 0x80000000;
+    }
+    val = (1 << 20) | (uf2 & 0xFFFFF);
+    if (E <= 20) {
+        val = val >> (20 - E);
+    } else {
+        val = (val << (E - 20)) | (uf1 >> (52 - E));
+    }
+    if (sign) {
+        val = -val;
+    }
+    if (sign) {
+        if (val > 0) {
+            return 0x80000000;
+        }
+    } else {
+        if (val < 0) {
+            return 0x80000000;
+        }
+    }
+    return val;
 }
 
 /*
@@ -225,5 +288,14 @@ int float64_f2i(unsigned uf1, unsigned uf2) {
  *   Difficulty: 4
  */
 unsigned floatPower2(int x) {
-    return 2;
+    if (x < -149) {
+        return 0;
+    }
+    if (x < -126) {
+        return 1 << (x + 149);
+    }
+    if (x > 127) {
+        return 0xFF << 23;
+    }
+    return (x + 127) << 23;
 }
